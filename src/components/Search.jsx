@@ -8,7 +8,7 @@ const Search = () => {
   const [results, setResults] = useState([])
   const [error, setError] = useState("");
 
-  const API_KEY = '7850b5fe50ecb4e9311b370b7e6cf12a99a2babe305b22c2e2ba47e7848b6201'
+  const API_KEY = ''
 
 
   const handleSubmit = async (e) => {
