@@ -5,15 +5,18 @@ import noodles from "../assets/noodles.svg"
 const Search = () => {
 
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const API_KEY = '7850b5fe50ecb4e9311b370b7e6cf12a99a2babe305b22c2e2ba47e7848b6201'
 
-
   const handleSubmit = async (e) => {
     e.preventDeault();
-
+    if (!query){
+      return;
+    }
+    setLoading(true);
     const URL = 'https://serpapi.com/search.json'
     try {
 
@@ -30,9 +33,13 @@ const Search = () => {
       })
       const data = res.json();
       setResults(data);
-    } catch (err) {
+    } 
+    catch (err) {
       console.error(err)
       setError("Ocorreu um erro ao fazer a busca");
+    }
+    finally {
+      setLoading(false)
     }
   };
 
@@ -46,6 +53,20 @@ const Search = () => {
         <input type="text" name="query" placeholder="Pesquisar" onChange={(e) => setQuery(e.target.value)} />
         <button type="submit">Buscar</button>
       </form>
+      <div>
+        <ul>
+          {error ? (<h4>{error}</h4>) :
+          loading ? (<h4>Espere enquanto carrega</h4>) :
+
+          results.map((item, index) => {
+            return (
+            <li key={index}>
+              <a href={item.link} target="_blank" rel="noopener noreferrer">{item.title}</a>
+              <p>{item.snippet}</p>
+            </li>)
+          })}
+        </ul>
+      </div>
     </div>
   );
 };
