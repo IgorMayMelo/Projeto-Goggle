@@ -1,45 +1,34 @@
 import axios from "axios";
 import { useState } from "react";
-import noodles from "../assets/noodles.svg"
+import noodles from "../assets/noodles.svg";
 
 const Search = () => {
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const API_KEY = '7850b5fe50ecb4e9311b370b7e6cf12a99a2babe305b22c2e2ba47e7848b6201'
-
   const handleSubmit = async (e) => {
-    e.preventDeault();
-    if (!query){
+    e.preventDefault();
+    if (!query) {
       return;
     }
+    setError("");
     setLoading(true);
-    const URL = 'https://serpapi.com/search.json'
     try {
-
+      const URL = "http://localhost:4000/search";
       const res = await axios.get(URL, {
-        params :{
-          q : query,
-          engine : 'google',
-          google_domain : 'google.com.br',
-          api_key : API_KEY,
-          hl : 'pt-br',
-          gl : 'br',
-          num : 10,
+        params: {
+          query: query,
         },
-      })
-      const data = res.json();
+      });
+      const data = (await res).data.organic_results || [];
       setResults(data);
-    } 
-    catch (err) {
-      console.error(err)
+    } catch (err) {
+      console.error(err);
       setError("Ocorreu um erro ao fazer a busca");
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,25 +39,36 @@ const Search = () => {
         <img src={noodles} alt="noodles" />
       </div>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="query" placeholder="Pesquisar" onChange={(e) => setQuery(e.target.value)} />
+        <input
+          type="text"
+          name="query"
+          placeholder="Pesquisar"
+          onChange={(e) => setQuery(e.target.value)}
+        />
         <button type="submit">Buscar</button>
       </form>
       <div>
-        <ul>
-          {error ? (<h4>{error}</h4>) :
-          loading ? (<h4>Espere enquanto carrega</h4>) :
-
-          results.map((item, index) => {
-            return (
-            <li key={index}>
-              <a href={item.link} target="_blank" rel="noopener noreferrer">{item.title}</a>
-              <p>{item.snippet}</p>
-            </li>)
-          })}
-        </ul>
+        {error ? (
+          <h4>{error}</h4>
+        ) : loading ? (
+          <h4>Espere enquanto carrega</h4>
+        ) : (
+          <ul>
+            {results.map((item, index) => {
+              return (
+                <li key={index}>
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                    {item.title}
+                  </a>
+                  <p>{item.snippet}</p>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
     </div>
   );
 };
 
-export default Search
+export default Search;
