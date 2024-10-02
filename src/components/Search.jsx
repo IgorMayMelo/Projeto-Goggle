@@ -8,6 +8,9 @@ const Search = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_KEY = ''
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!query) {
